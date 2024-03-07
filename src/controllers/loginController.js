@@ -38,11 +38,11 @@ module.exports.login = async (req, res, next) => {
     const { account, password } = req.body;
 
     const userCheck = await User.findOne({ account });
-
+    console.log(userCheck)
     if (userCheck) {
-      const passwordCheck = await bcrypt.compare(password, userCheck.password);
-
-      if (passwordCheck) {
+    //   const passwordCheck =await bcrypt.compare(password, userCheck.password);
+    //   console.log("passwordCheck:",passwordCheck)
+      if (userCheck.password===password) {
         res.json({ msg: "登录成功！", status: true, user: userCheck });
       } else {
         res.json({ msg: "密码错误!", status: false });
