@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { required } = require("nodemon/lib/config");
+
 const { Schema } = mongoose;
 const userSchema = new Schema({
   nick_name: {
@@ -34,8 +34,16 @@ const userSchema = new Schema({
     type: String,
     default: " ",
   },
-  friends: [mongoose.Schema.Types.ObjectId],
-  groups: [mongoose.Schema.Types.ObjectId],
+  birthday:{
+    type:Date,
+    default:"2000-01-01"
+  },
+  sex:{
+    type:Number,
+    default:0   // 0:male  1:female
+  }
+  // friends: [mongoose.Schema.Types.ObjectId],
+  // groups: [mongoose.Schema.Types.ObjectId],
 });
 
 
