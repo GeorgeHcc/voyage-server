@@ -1,30 +1,39 @@
 const { register, login } = require("../controllers/loginController");
 
-const {getUser,getAllFirends,addFirends}=require("../controllers/userController")
+const {getUser,getAllFirends,addFirends,getFriendsList,applyFriends}=require("../controllers/userController")
 
 
-const router = require("express").Router();
+const userRouter = require("express").Router();
 
-router.post("/register", register);
+userRouter.post("/register", register);
 
-router.post("/login", login);
+userRouter.post("/login", login);
 
 /**
  * 搜索用户
  * @params email 
  */
-router.post("/getUser",getUser)
+userRouter.post("/getUser",getUser)
 
 /**
  * 好友列表
  * @params id 用户id
  */
-router.get("/getAllFriends/:id",getAllFirends)
+userRouter.get("/getAllFriends/:id",getAllFirends)
 
 /**
  * 添加好友
  * @params id 用户id
  */
-router.get("/addFirends/:id",addFirends)
+userRouter.put("/addFirends",addFirends)
 
-module.exports = router;
+/**
+ * 处理好友申请
+ */
+userRouter.put("/applyFriends",applyFriends)
+/**
+ * 获取联系人/好友列表
+ */
+userRouter.get("/getFriendsList/:userId",getFriendsList)
+
+module.exports = userRouter;
