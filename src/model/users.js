@@ -17,14 +17,14 @@ const userSchema = new Schema({
   account: {
     type: String,
     min: 3,
-    max: 200,
+    max: 20,
     required: true,
     unique: true,
   },
-  email:{
-    type:String,
-    required:true,
-    unique:true
+  email: {
+    type: String,
+    required: true,
+    unique: true,
   },
   isAvatarImageSet: {
     type: Boolean,
@@ -32,21 +32,28 @@ const userSchema = new Schema({
   },
   avatarImage: {
     type: String,
-    default: " ",
+    default: "",
   },
-  birthday:{
-    type:Date,
-    default:"2000-01-01"
+  birthday: {
+    type: Date,
+    default: "2000-01-01",
   },
-  sex:{
-    type:Number,
-    default:0   // 0:male  1:female
-  }
-  // friends: [mongoose.Schema.Types.ObjectId],
-  // groups: [mongoose.Schema.Types.ObjectId],
+  phone: {
+    type: String,
+  },
+  phone_prefix: {
+    type: String,
+  },
+  gender: {
+    type: String,
+    default: "male", // male  emale
+  },
+  role: {
+    type: String,
+    default: "normal", //"normal" "system" "admin"
+  },
+  signature: { type: String, default: "" },
 });
-
-
 
 const User = mongoose.model("users", userSchema);
 

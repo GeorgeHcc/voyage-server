@@ -1,31 +1,26 @@
 const Messages = require("../model/messages.js");
 const Contacts = require("../model/contacts.js");
-/**
- *
- * @param {*} req {from,to,time}
- * @param {*} res
- * @param {*} next
- */
+const FriendShip=require("../model/friendShips.js")
+
+//查找两个人的聊天记录
 module.exports.getMsgListByUser = async (req, res, next) => {
   try {
     const { from, to } = req.body;
     //TODO: 消息记录分页
-    const msgList = await Messages.find({ $or:[
-      {from,to},{from:to,to:from}
-    ] });
+    const msgList = await Messages.find({
+      $or: [
+        { from, to },
+        { from: to, to: from },
+      ],
+    }).sort({ time: 1 });
     return res.json({ status: true, msgList });
   } catch (ex) {
     next(ex);
   }
 };
-/**
- *
- * @param {userId:string} req
- * @param {*} res
- * @param {*} next
- */
+
 module.exports.getContactMsgByUser = async (req, res, next) => {
-   try {
+  try {
     await Contacts.aggregate([
       {
         $match: {
@@ -63,3 +58,29 @@ module.exports.getContactMsgByUser = async (req, res, next) => {
     next(ex);
   }
 };
+
+//更新已读消息
+module.exports.updateMsgIsRead = async (req, res, next) => {
+  try {
+    const ids = req.body.ids;
+    await Messages.updateMany({ id: { $in: ids } }, { isRead: true });
+    res.json({ status: true, msg: "ok" });
+  } catch (ex) {
+    next(ex);
+    res.json({ status: false, msg: ex });
+  }
+};
+//获取系统消息
+module.exports.getSystemMsg = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    const msgList = await Messages.find({ to: userId, isSystemMsg: true }).sort({ time: 1 });
+    return res.json({ status: true, msgList });
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+//删除聊天记录
+module.exports.deleteMsgByUser
+

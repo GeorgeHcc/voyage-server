@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
-const messageSchema = new mongoose.Schema({
-  from: {
+const groupMessageSchema = new mongoose.Schema({
+  goupId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  to: {
+  senderId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
@@ -21,9 +21,9 @@ const messageSchema = new mongoose.Schema({
     type: Date,
     default: () => new Date(),
   },
-  isRead: {
-    type: Boolean,
-    default: false,
+  isReadMember: {
+    type: [],
+    default: [],
   },
   userDelete: {
     type: [],
@@ -31,6 +31,6 @@ const messageSchema = new mongoose.Schema({
   },
 });
 
-const Message = mongoose.model("messages", messageSchema);
+const GroupMsg = mongoose.model("groupMsgs", groupMessageSchema);
 
-module.exports = Message;
+module.exports = GroupMsg;

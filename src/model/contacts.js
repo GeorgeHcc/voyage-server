@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const contactSchema = new mongoose.Schema({
-  user_id: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  contact_id: {
+  friendId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
@@ -17,10 +17,14 @@ const contactSchema = new mongoose.Schema({
     default: true,
   },
   //消息置顶
-  msg_top:{
+  msg_top: {
     type: Boolean,
     default: false,
-  }
+  },
+  remark: {
+    type: String,
+    max: 20,
+  },
 });
 
 const Contacts = mongoose.model("contacts", contactSchema);

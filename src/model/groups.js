@@ -1,25 +1,32 @@
 const mongoose = require("mongoose");
 
-
 const groupSchema = new mongoose.Schema({
   maxMember: {
     type: Number,
     default: 1000,
   },
-  members:{
-    type:[],
-    default:[]
+  members: {
+    type: [],
+    default: [],
   },
-  groupName:{
-    type:String,
-    required:true
+  GroupHost: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
   },
-  groupDescription:{
-    type:String,
-    default:""
-  }
+  admins: {
+    type: [],
+    default: [],
+  },
+  groupName: {
+    type: String,
+    required: true,
+  },
+  groupDescription: {
+    type: String,
+    default: "",
+  },
 });
 
-const Group=mongoose.model('groups',groupSchema) 
+const Group = mongoose.model("groups", groupSchema);
 
-export default Group 
+module.exports = Group;

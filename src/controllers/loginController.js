@@ -1,10 +1,25 @@
 const User = require("../model/users");
 const System = require("../utils/system");
 const bcrypt = require("bcrypt");
+const Message = require("../model/messages");
+
+module.exports.checkAccount = async (req, res, next) => {
+  try {
+    const account = req.params.account;
+    const isAccountRegisted = await User.findOne({ account });
+    if (isAccountRegisted) {
+      return res.json({ msg: "account already in used!", status: false });
+    }
+    return res.json({ msg: "valid account!", status: true });
+  } catch (ex) {
+    next(ex);
+  }
+};
 
 module.exports.register = async (req, res, next) => {
   try {
-    const { account, password, email } = req.body;
+    const { account, password, confirm, email, nick_name, gender, phone, phone_prefix, birthday } =
+      req.body;
 
     const accountCheck = await User.findOne({ account });
     if (accountCheck) {
@@ -17,15 +32,28 @@ module.exports.register = async (req, res, next) => {
       return res.json({ msg: "email already in used", status: false });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
       account,
       email,
-      password: hashedPassword,
+      password,
+      // password: hashedPassword,
+      confirm,
+      email,
+      nick_name,
+      gender,
+      phone,
+      phone_prefix,
+      birthday,
     });
-
     delete user.password;
+    await Message.create({
+      from: "65f96e016cfbd471cbc04e6c",
+      to: user._id,
+      msg: `嘿！${user.nick_name},欢迎新朋友,想要了解关于Voyage的更多内容吗，赶快一起来体验吧~`,
+      isSystemMsg:true
+    });
     res.json({ user, status: true });
   } catch (e) {
     System.error(e);
@@ -48,7 +76,7 @@ module.exports.login = async (req, res, next) => {
           id: userCheck._id,
           account: userCheck.account,
           nick_name: userCheck.nick_name,
-          sex: userCheck.sex,
+          gender: userCheck.gender,
           birthday: userCheck.birthday,
           avatarImage: userCheck.avatarImage,
         };

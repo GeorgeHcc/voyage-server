@@ -17,6 +17,7 @@ const friendShipSchema = new mongoose.Schema({
   //备注
   remark: {
     type: String,
+    default: "",
     max: 20,
   },
   //验证消息
@@ -29,6 +30,24 @@ const friendShipSchema = new mongoose.Schema({
     default: false,
   },
   isAccepter: {
+    type: Boolean,
+    default: false,
+  },
+  lastMsg: {
+    type: String,
+    default: "",
+  },
+  lastTime: {
+    type: Date,
+    default: new Date(),
+  },
+  //消息免打扰
+  msg_mention: {
+    type: Boolean,
+    default: true,
+  },
+  //消息置顶
+  msg_top: {
     type: Boolean,
     default: false,
   },
