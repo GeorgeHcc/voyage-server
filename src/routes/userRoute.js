@@ -36,7 +36,7 @@ userRouter.post("/addFriends", addFriends);
 userRouter.get("/getApplyMsg/:userId", getApplyMsg);
 
  //处理好友申请
-userRouter.put("/applyFriends", applyFriends);
+userRouter.post("/applyFriends", applyFriends);
 
  // 获取联系人/好友列表
 userRouter.get("/getFriendsList/:userId", getFriendsList);

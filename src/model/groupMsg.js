@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const groupMessageSchema = new mongoose.Schema({
-  goupId: {
+  groupId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },

@@ -3,7 +3,7 @@ const FriendShip = require("../model/friendShips");
 const Message = require("../model/messages");
 const ObjectId = require("mongoose").ObjectId;
 //搜索用户
-module.exports.getUser = async (req, res, next) => {
+const getUser = async (req, res, next) => {
   try {
     const { nickName, userId } = req.body;
 
@@ -22,7 +22,7 @@ module.exports.getUser = async (req, res, next) => {
 };
 
 //搜索好友
-module.exports.getAllFirends = async (req, res, next) => {
+const getAllFirends = async (req, res, next) => {
   try {
     const ownerId = req.params.id;
     const users = await User.find({ _id: ownerId }).select("-password");
@@ -33,11 +33,14 @@ module.exports.getAllFirends = async (req, res, next) => {
 };
 
 //添加好友
-module.exports.addFriends = async (req, res, next) => {
+const addFriends = async (req, res, next) => {
   try {
-    const { userId, friendId, remark, applyMsg } = req.body;
+    let { userId, friendId, remark, applyMsg } = req.body;
     const checkFriend = await FriendShip.findOne({ userId, friendId });
-
+    if (!remark) {
+      const user = await User.findOne({ _id: friendId });
+      remark = user.nick_name;
+    }
     if (!checkFriend) {
       await FriendShip.create({ userId, friendId, remark, applyMsg, isApplyer: true });
     } else {
@@ -54,7 +57,8 @@ module.exports.addFriends = async (req, res, next) => {
 };
 
 //获取好友申请消息
-module.exports.getApplyMsg = async (req, res, next) => {
+
+const getApplyMsg = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const friendsWithStatus = await FriendShip.find({ friendId: userId });
@@ -70,34 +74,41 @@ module.exports.getApplyMsg = async (req, res, next) => {
 };
 
 //处理好友申请
-module.exports.applyFriends = async (req, res, next) => {
+const applyFriends = async (req, res, next) => {
   try {
     const { userId, friendId, status, remark } = req.body;
     if (status) {
       //同意
-      const exitsFriends = FriendShip.findOne({ userId, friendId });
-      if (exitsFriends) {
-        await FriendShip.updateOne(
-          { userId, friendId },
-          { $set: { status, remark, isAccepter: true } }
-        );
-        await FriendShip.updateOne({ userId: friendId, friendId: userId }, { $set: { status } });
-      } else {
-        await FriendShip.create({ userId, friendId, status, remark, isAccepter: true });
-        await FriendShip.updateOne({ userId: friendId, friendId: userId }, { $set: { status } });
-      }
+      // const exitsFriends = FriendShip.findOne({
+      //   userId,
+      //   friendId,
+      //   status: false,
+      // });
+      // console.log("exitsFriends:", exitsFriends);
+      // if (exitsFriends) {
+      //   await FriendShip.updateOne(
+      //     { userId, friendId },
+      //     { $set: { status, remark, isAccepter: true } }
+      //   );
 
-      await FriendShip.updateMany(
-        {
-          $or: [
-            { userId, friendId },
-            { friendId: userId, userId: friendId },
-          ],
-        },
-        {
-          $set: { lastMsg: "我们已经是好友了，快来和我一起聊天吧！", lastTime: new Date() },
-        }
+      //   await FriendShip.updateOne({ userId: friendId, friendId: userId }, { $set: { status } });
+      // } else {
+      //创建好友关系
+      await FriendShip.create({
+        userId,
+        friendId,
+        status,
+        remark,
+        isAccepter: true,
+        lastMsg: "我们已经是好友了，快来和我一起聊天吧！",
+      });
+      //更新对方好友状态
+      await FriendShip.updateOne(
+        { userId: friendId, friendId: userId },
+        { $set: { status, lastMsg: "我们已经是好友了，快来和我一起聊天吧！" } }
       );
+      // }
+
       await Message.create({
         from: userId,
         to: friendId,
@@ -111,7 +122,7 @@ module.exports.applyFriends = async (req, res, next) => {
 };
 
 //获取联系人列表
-module.exports.getFriendsList = async (req, res, next) => {
+const getFriendsList = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     //查找已建立好友关系的好友
@@ -137,13 +148,36 @@ module.exports.getFriendsList = async (req, res, next) => {
   }
 };
 //删除好友
-module.exports.deleteFirends = (req, res, next) => {};
+const deleteFirends = (req, res, next) => {};
 
 //添加群组
-module.exports.addGroup = (req, res, next) => {};
+const addGroup = (req, res, next) => {};
 
 //退出群组
-module.exports.exitGroup = (req, res, next) => {};
+const exitGroup = (req, res, next) => {};
 
 //群组列表
-module.exports.getGroupList = (req, res, next) => {};
+const getGroupList = (req, res, next) => {};
+
+//好友设置
+const updateFriendSetting= (req, res, next) => {
+  try{
+    const {remark,msg_mention,msg_top} =req.body
+  }catch(ex){
+    next(ex)
+  }
+
+};
+module.exports = {
+  updateFriendSetting,
+  getApplyMsg,
+  getGroupList,
+  exitGroup,
+  addGroup,
+  deleteFirends,
+  getFriendsList,
+  applyFriends,
+  addFriends,
+  getAllFirends,
+  getUser,
+};

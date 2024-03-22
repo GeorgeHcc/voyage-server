@@ -9,7 +9,7 @@ const groupSchema = new mongoose.Schema({
     type: [],
     default: [],
   },
-  GroupHost: {
+  groupHost: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
@@ -21,9 +21,21 @@ const groupSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  groupAvatar: {
+    type: String,
+    default: "",
+  },
   groupDescription: {
     type: String,
     default: "",
+  },
+  lastMsg: {
+    type: String,
+    default: "",
+  },
+  lastTime: {
+    type: Date,
+    default: new Date(),
   },
 });
 

@@ -1,7 +1,8 @@
 const Messages = require("../model/messages.js");
 const Contacts = require("../model/contacts.js");
-const FriendShip=require("../model/friendShips.js")
-
+const FriendShip = require("../model/friendShips.js");
+const Group = require("../model/groups.js");
+const GroupMsg = require("../model/groupMsg.js");
 //查找两个人的聊天记录
 module.exports.getMsgListByUser = async (req, res, next) => {
   try {
@@ -82,5 +83,22 @@ module.exports.getSystemMsg = async (req, res, next) => {
 };
 
 //删除聊天记录
-module.exports.deleteMsgByUser
+module.exports.deleteMsgByUser;
 
+//获取群组消息
+module.exports.getGroupMsg = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    const groups = await Group.find({ $or: [{ members: userId }, { groupHost: userId }] });
+    const result = [];
+    for (const group of groups) {
+      // const msgs = await GroupMsg.find({ groupId: group._id });
+      // result.push({ group, msgList: msgs });
+      result.push(group);
+    }
+    res.json({ status: true, group:result });
+    // res.json({ status: true, groupMsgList: result });
+  } catch (ex) {
+    next(ex);
+  }
+};
