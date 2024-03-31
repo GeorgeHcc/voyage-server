@@ -1,10 +1,11 @@
 const messageRouter = require("./messageRoute");
 const userRouter = require("./userRoute");
-const groupRouter=require("./groupRoute")
+const groupRouter = require("./groupRoute");
+const loginRouter = require("./loginRoute");
 const router = require("express").Router();
-
-router.use("/message", messageRouter);
-router.use("/user", userRouter);
-router.use("/group", groupRouter);
-
+const { authMiddleware } = require("../middleware/authMiddleware");
+router.use("/auth/message", messageRouter);
+router.use("/auth/user", userRouter);
+router.use("/auth/group", groupRouter);
+router.use("/auth", loginRouter);
 module.exports = router;

@@ -1,4 +1,3 @@
-const { register, login, checkAccount } = require("../controllers/loginController");
 
 const {
   getUser,
@@ -11,10 +10,6 @@ const {
 
 const userRouter = require("express").Router();
 
-userRouter.get("/checkAccount/:account", checkAccount);
-userRouter.post("/register", register);
-
-userRouter.post("/login", login);
 
 /**
  * 搜索用户

@@ -2,6 +2,7 @@ const User = require("../model/users");
 const System = require("../utils/system");
 const bcrypt = require("bcrypt");
 const Message = require("../model/messages");
+const { createAccessToken } = require("../middleware/authMiddleware.js");
 
 module.exports.checkAccount = async (req, res, next) => {
   try {
@@ -52,7 +53,7 @@ module.exports.register = async (req, res, next) => {
       from: "65f96e016cfbd471cbc04e6c",
       to: user._id,
       msg: `嘿！${user.nick_name},欢迎新朋友,想要了解关于Voyage的更多内容吗，赶快一起来体验吧~`,
-      isSystemMsg:true
+      isSystemMsg: true,
     });
     res.json({ user, status: true });
   } catch (e) {
@@ -80,10 +81,9 @@ module.exports.login = async (req, res, next) => {
           birthday: userCheck.birthday,
           avatarImage: userCheck.avatarImage,
         };
-        console.log("userCheck", userCheck);
-
+        const token = createAccessToken(user.id);
+        res.cookie("accessToken", token, { httpOnly: true, maxAge: 3600000, path: "http://localhost:3002/" });
         res.json({ msg: "登录成功！", status: true, user: user });
-        console.log(" userCheck.password", userCheck.password);
       } else {
         res.json({ msg: "密码错误!", status: false });
       }
